@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<title>كلية التمريض IN &amp; OUT</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f1f4a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="IN & OUT">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<style>
+html,body{margin:0;height:100%;background:#0f1f4a;font-family:Tahoma,Arial,sans-serif}
+iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#eef2f8}
+#sp{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:#fff;
+ background:linear-gradient(135deg,#0f1f4a,#4f46e5);z-index:5;transition:opacity .35s}
+#sp img{width:96px;height:96px;border-radius:22px}#sp b{font-size:22px}#sp small{opacity:.8}
+#off{position:fixed;top:0;left:0;right:0;background:#b91c1c;color:#fff;text-align:center;padding:8px;z-index:9;font-weight:700;display:none}
+</style></head><body>
+<div id="off">لا يوجد اتصال بالإنترنت</div>
+<div id="sp"><img src="icons/icon-192.png" alt=""><b>كلية التمريض IN &amp; OUT</b><small id="st">جاري التحميل…</small></div>
+<script>
+/* ضع هنا رابط تطبيق Apps Script (الذي ينتهي بـ /exec) بين العلامتين */
+const APP_URL = 'https://script.google.com/macros/s/AKfycbywR4UJwiML1Ktyk1FgAhA3Sbev6oi6enPJCw0vh9iD-ZKmcpIotcQDAGKRxBFLHNAm/exec';
+
+const sp = document.getElementById('sp'), st = document.getElementById('st');
+if (!/^https:\/\/script\.google\.com\/.+\/exec/.test(APP_URL)) {
+  st.textContent = 'لم يُضبط رابط التطبيق بعد — افتح index.html وضع الرابط في سطر APP_URL';
+} else {
+  const f = document.createElement('iframe');
+  f.setAttribute('allow', 'clipboard-write; fullscreen');
+  f.onload = () => { sp.style.opacity = 0; setTimeout(() => sp.remove(), 400); };
+  f.src = APP_URL;
+  document.body.appendChild(f);
+  setTimeout(() => { if (sp.isConnected) st.textContent = 'التحميل بطيء… تأكد من الاتصال بالإنترنت'; }, 12000);
+}
+const off = document.getElementById('off');
+const net = () => off.style.display = navigator.onLine ? 'none' : 'block';
+addEventListener('online', net); addEventListener('offline', net); net();
+if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+</script></body></html>
